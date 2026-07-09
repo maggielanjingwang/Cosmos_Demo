@@ -8,7 +8,7 @@ a human checkpoint at every step.
 
 The app is a self-contained HTML file (no server, no build, no internet needed).
 
-- **Latest app:** https://maggielanjingwang.github.io/Cosmos_Demo/afib_research_platform_v3.html
+- **Latest app:** https://maggielanjingwang.github.io/Cosmos_Demo/afib_research_platform_v4.html
 
 
 ## What's in the repo
@@ -16,8 +16,8 @@ The app is a self-contained HTML file (no server, no build, no internet needed).
 | File | Purpose |
 |------|---------|
 | `index.html` | Redirects to the latest app version (for the Pages root URL) |
-| `afib_research_platform_v3.html` | **Latest** — the interactive platform |
-| `afib_research_platform_v2.html`, `_v1.html` | Earlier versions |
+| `afib_research_platform_v4.html` | **Latest** — the interactive platform |
+| `afib_research_platform_v3.html`, `_v2.html`, `_v1.html` | Earlier versions |
 | `afib_research_console_v0.html` | Original single-page prototype |
 | `goal.md` | Project overview + full Step 0–7 workflow spec |
 | `rule.md` | Engineering rules for the platform |
