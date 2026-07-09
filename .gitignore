@@ -1,0 +1,11 @@
+# Ignore everything by default
+*
+
+# but let git descend into subdirectories to find HTML files
+!*/
+
+# track only HTML files
+!*.html
+
+# keep this file tracked
+!.gitignore
