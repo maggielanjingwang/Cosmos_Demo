@@ -1,11 +1,17 @@
 # Ignore everything by default
-*
+*.pdf
+*.xlsx
+*.png
+*.docx
 
 # but let git descend into subdirectories to find HTML files
-!*/
-
-# track only HTML files
-!*.html
+.history/
+papers/
 
 # keep this file tracked
 !.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+*.icloud

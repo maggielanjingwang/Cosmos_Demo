@@ -222,6 +222,34 @@
   .cat .rolebar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:10px;gap:1.5px;background:var(--surface-3)}
   .cat .avail{display:flex;gap:5px;margin-top:9px}
   .cat .achip{font-family:var(--font-mono);font-size:9.5px;padding:1px 6px;border-radius:20px}
+  /* taxonomy tree (Step 4) */
+  .tax{display:flex;flex-direction:column;gap:10px}
+  .tmod{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow-sm);overflow:hidden;border-left:4px solid var(--mc,var(--accent))}
+  .tmod .mh{display:flex;align-items:center;gap:11px;padding:13px 15px;cursor:pointer}
+  .tmod .mh:hover{background:var(--surface-2)}
+  .mh .mcode{font-family:var(--font-display);font-weight:700;font-size:16px;width:18px;color:var(--mc,var(--accent))}
+  .mh .mname{font-weight:600;font-size:14.5px}
+  .mh .mcount{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-3);white-space:nowrap}
+  .mh .chev,.sh .chev{color:var(--ink-3);transition:transform .15s;flex:none}
+  .tmod.open>.mh .chev{transform:rotate(90deg)}
+  .tmod .mbody{display:none;padding:0 12px 12px}
+  .tmod.open>.mbody{display:block}
+  .tsub{border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:9px;overflow:hidden;background:var(--surface-2)}
+  .tsub .sh{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;cursor:pointer}
+  .tsub .sh:hover{background:var(--surface-3)}
+  .sh .scode{font-family:var(--font-mono);font-size:11px;color:var(--ink-3);font-weight:600}
+  .sh .sname{font-weight:600;font-size:13.5px}
+  .sh .sq{font-size:12px;color:var(--ink-2);font-style:italic;margin-top:2px}
+  .sh .sseed{font-family:var(--font-mono);font-size:10px;color:var(--ink-3);margin-top:3px}
+  .sh .scount{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-3);white-space:nowrap}
+  .tsub .sbody{display:none;padding:0 13px 8px;background:var(--surface)}
+  .tsub.open .sbody{display:block}
+  .tvar{display:grid;grid-template-columns:20px 1fr auto;gap:11px;align-items:start;padding:10px 2px;border-top:1px solid var(--border)}
+  .tvar .vid{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3)}
+  .tvar .vname{font-weight:600;line-height:1.25;margin:1px 0 6px;font-size:13.5px}
+  .tvar .vside{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:92px}
+  .cbx:indeterminate{background:var(--accent);border-color:var(--accent)}
+  .cbx:indeterminate::after{content:"";position:absolute;left:3.5px;top:7.5px;width:10px;height:2.5px;border-radius:1px;background:#fff;border:none;transform:none}
   .console{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;margin-top:18px}
   @media(max-width:980px){.console{grid-template-columns:1fr}}
   .filters{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm);margin-bottom:12px}
@@ -617,6 +645,21 @@ papers.forEach(p=>{const mc={A:0,B:0,C:0,D:0},rc={};(p.links||[]).forEach(l=>{co
   p.module_code=Object.keys(mc).sort((a,b)=>mc[b]-mc[a])[0];p.domRole=Object.keys(rc).sort((a,b)=>rc[b]-rc[a])[0]||"Adjustment";});
 const MOD_COLOR={A:"#4d7cff",B:"#ff922b",C:"#38d9a9",D:"#b78bff"};
 const MOD_NAME={A:"Cohort & context",B:"Clinical profile & risk",C:"Management pathways",D:"Outcomes & utilization"};
+const MODULES=[["A","Cohort foundation & context"],["B","Clinical profile & risk"],["C","Management pathways"],["D","Outcomes & utilization"]];
+const SUBCAT={
+  "Cohort & observability":{code:"A1",q:"How is AF defined and when does follow-up begin?",seeds:["OATES25","NAVAR22","TEPPO23"]},
+  "AF phenotype":{code:"A2",q:"Which rhythm phenotype is being studied?",seeds:["FIELD21","HSU23","LAPPALAINEN24"]},
+  "Demographics & equity":{code:"A3",q:"Who gets treated, and where do disparities arise?",seeds:["OATES25","ZENGER25","FOX22"]},
+  "Stroke/bleeding risk":{code:"B1",q:"Who is eligible for stroke prevention and who has higher bleeding risk?",seeds:["SANDHU23","NAVAR22","DAIMEE22"]},
+  "Comorbidity":{code:"B2",q:"Which baseline conditions shape treatment selection?",seeds:["HSU23","FIELD21","PRICE22"]},
+  "Risk-factor management":{code:"B3",q:"Are AF guideline lifestyle and risk-factor targets being addressed?",seeds:["ULLAL22","TEPPO23"]},
+  "Anticoagulation":{code:"C1",q:"Who receives anticoagulation, which agent, and is dosing appropriate?",seeds:["NAVAR22","SANDHU23","ULLAL22"]},
+  "Rate control":{code:"C2",q:"How is rate control being used and how well is rate controlled?",seeds:["SIPONEN25","ULLAL22"]},
+  "Rhythm control":{code:"C3",q:"Who gets early rhythm control and what are the treatment sequences?",seeds:["OATES25","DESAI21","POPE21"]},
+  "Ablation":{code:"C4",q:"Who gets ablation, how quickly, and with what outcomes?",seeds:["HSU23","SANDHU25","KATTEL25"]},
+  "LAAO":{code:"C5",q:"Who gets LAAO and what happens after implantation?",seeds:["DAIMEE22","KAPADIA24","PRICE22"]},
+  "Outcomes":{code:"D1",q:"What downstream clinical and utilization outcomes follow AF management choices?",seeds:["TEPPO23","WILLIAMS24","PRICE22"]},
+};
 
 function mountLitMap(c,onToggle){
   const canvas=c.querySelector("#mapCanvas"),ctx=canvas.getContext("2d");
@@ -793,22 +836,18 @@ function renderStep3(){
 /* ===================== STEP 4 ===================== */
 function renderStep4(){
   const r=routeById.step4;
-  const html=phead(r,"An interactive overview of the evidence, then the deliverable: check the variables your study needs. Relevance and Cosmos feasibility stay separate. The system also suggests questions you may not have considered.")+`
-  <h3 style="font-family:var(--font-display);font-size:19px;margin:0 0 4px">60 variables across 12 domains</h3>
-  <p class="muted small" style="margin:0 0 14px">Each tile: role split (Exposure · Outcome · Adjustment · Subgroup) and Cosmos availability. Click a domain to filter the checklist.</p>
-  <div class="cat-grid" id="catGrid"></div>
-
+  const html=phead(r,"The Epic Cosmos AF variable taxonomy. Select whole modules, subcategories, or individual variables — by checkbox or plain-language chat. Your selection becomes the variable list that drives the SAP and the Cosmos data query plan.")+`
   <div class="console">
     <div>
       <div class="filters">
         <div class="search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
-          <input type="text" id="search" placeholder="Search, or describe what you need — e.g. “anticoagulation quality and stroke outcomes”"></div>
+          <input type="text" id="search" placeholder="Chat / search — e.g. “anticoagulation quality and stroke outcomes”"></div>
         <div class="chips" id="availChips"></div><div class="chips" id="roleChips"></div>
         <div class="small muted" id="filterHint" style="margin-top:9px"></div>
       </div>
       <div class="listhead"><span id="listCount"></span>
-        <div style="display:flex;gap:8px"><button class="btn sm" id="selAll">Select all shown</button><button class="btn sm" id="expandAll">Expand definitions</button></div></div>
-      <div class="vlist" id="vlist"></div>
+        <div style="display:flex;gap:8px"><button class="btn sm" id="expandAllT">Expand all</button><button class="btn sm" id="collapseAllT">Collapse all</button></div></div>
+      <div class="tax" id="taxTree"></div>
 
       <h3 style="font-family:var(--font-display);font-size:19px;margin:30px 0 4px">Research question recommendations</h3>
       <p class="muted small" style="margin:0 0 14px">Surfaced from synthesis + gaps. Options, never instructions.</p>
@@ -816,65 +855,112 @@ function renderStep4(){
     </div>
     <aside><div class="cart">
       <div class="ch"><div class="lbl">Your selection</div><div class="cnt"><span id="cartCount">0</span> <small>/ 60 variables</small></div></div>
-      <div class="body"><div id="rolesum"></div><div id="cartList"><div class="empty">No variables selected yet.<br>Check rows, or click a domain tile.</div></div>
+      <div class="body"><div id="rolesum"></div><div id="cartList"><div class="empty">No variables selected yet.<br>Check a module, subcategory, or variable.</div></div>
         <div class="exports"><button class="btn primary" id="expCsv">Export CSV</button><button class="btn" id="expJson">JSON</button></div>
         <div class="feas" id="feas"></div></div>
     </div></aside>
   </div>`+pnav(r);
 
-  return {html,mount(c){ mountSelector(c); }};
+  return {html,mount(c){ mountTaxonomy(c); }};
 }
 
-function mountSelector(c){
-  let catFilter=null,availFilter=new Set(),roleFilter=new Set(),searchQ="",expandAll=false;
-  const catGrid=c.querySelector("#catGrid"),vlist=c.querySelector("#vlist"),hint=c.querySelector("#filterHint");
-  function renderCats(){catGrid.innerHTML="";catOrder.forEach(cat=>{
-    const vs=variables.filter(v=>v.category===cat),rc={Exposure:0,Outcome:0,Adjustment:0,Subgroup:0};
-    vs.forEach(v=>v.roles.forEach(r=>{if(rc[r]!=null)rc[r]++;}));const av=availOf(vs);
-    const d=el("div","cat"+(catFilter===cat?" active":""));
-    d.innerHTML=`<div class="cn">${esc(cat)}</div><div class="cc">${vs.length} variable${vs.length>1?"s":""}</div>
-      <div class="rolebar">${ROLES.map(r=>rc[r]?`<span style="background:var(${ROLE_VAR[r]});flex:${rc[r]}"></span>`:"").join("")}</div>
-      <div class="avail">${av.High?`<span class="achip a-High">✓ ${av.High}</span>`:""}${av.Medium?`<span class="achip a-Medium">~ ${av.Medium}</span>`:""}${av.Low?`<span class="achip a-Low">! ${av.Low}</span>`:""}</div>`;
-    d.addEventListener("click",()=>{catFilter=catFilter===cat?null:cat;renderCats();renderList();hint.innerHTML=catFilter?`Filtered to domain <b>${esc(catFilter)}</b>.`:"";});
-    catGrid.appendChild(d);});}
-  const availChips=c.querySelector("#availChips");
-  [["High","✓ Cosmos: High"],["Medium","~ Medium"],["Low","! Low"]].forEach(a=>{const b=el("button","fchip",a[1]);
-    b.addEventListener("click",()=>{b.classList.toggle("on");availFilter.has(a[0])?availFilter.delete(a[0]):availFilter.add(a[0]);renderList();});availChips.appendChild(b);});
-  const roleChips=c.querySelector("#roleChips");
-  ROLES.forEach(r=>{const b=el("button","fchip",`<span class="fx" style="background:var(${ROLE_VAR[r]})"></span>${r}`);
-    b.addEventListener("click",()=>{b.classList.toggle("on");roleFilter.has(r)?roleFilter.delete(r):roleFilter.add(r);renderList();});roleChips.appendChild(b);});
+function mountTaxonomy(c){
+  let availFilter=new Set(),roleFilter=new Set(),searchQ="";
+  let expandedModules=new Set(["A","B","C","D"]),expandedSubcats=new Set();
+  const tree=c.querySelector("#taxTree"),hint=c.querySelector("#filterHint");
+  const availIcon={High:"✓",Medium:"~",Low:"!"};
+  const varsByCat={};catOrder.forEach(cat=>varsByCat[cat]=variables.filter(v=>v.category===cat));
   function match(v,q){if(!q)return true;const terms=q.toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>2);if(!terms.length)return true;
     const hay=(v.variable_id+" "+v.variable_name+" "+v.category+" "+v.operational_definition+" "+v.roles.join(" ")+" "+(v.cosmos_source_tables||"")).toLowerCase();return terms.some(t=>hay.includes(t));}
-  c.querySelector("#search").addEventListener("input",e=>{searchQ=e.target.value;renderList();});
-  function filtered(){return variables.filter(v=>{if(catFilter&&v.category!==catFilter)return false;
-    if(availFilter.size&&!availFilter.has(v.cosmos_availability))return false;
-    if(roleFilter.size&&!v.roles.some(r=>roleFilter.has(r)))return false;return match(v,searchQ);});}
-  const availIcon={High:"✓",Medium:"~",Low:"!"};
-  function renderList(){const fs=filtered();vlist.innerHTML="";
-    c.querySelector("#listCount").innerHTML=`<b class="tnum">${fs.length}</b> of 60 variables shown`;
-    if(!fs.length){vlist.innerHTML='<div style="padding:24px;text-align:center;color:var(--ink-3)">No variables match these filters.</div>';return;}
-    fs.forEach(v=>{const row=el("div","vrow"+(state.selected.has(v.variable_id)?" sel":"")+(expandAll?" open":""));const np=(v.links||[]).length;
-      row.innerHTML=`<input type="checkbox" class="cbx" ${state.selected.has(v.variable_id)?"checked":""} aria-label="Select ${esc(v.variable_name)}">
-        <div><div class="vid">${v.variable_id} · ${esc(v.category)}</div><div class="vname">${esc(v.variable_name)}</div>
-          <div class="vdef">${esc(v.operational_definition)}<br><span class="mono" style="color:var(--ink-3);font-size:11px">Cosmos: ${esc(v.cosmos_source_tables||"—")}</span></div>
-          <div class="vtags">${v.roles.map(roleTag).join("")}<span class="tag paper">${np} paper${np>1?"s":""}</span><button class="expand" data-x>${expandAll?"hide":"definition ▾"}</button></div></div>
-        <div class="vside"><span class="badge a-${v.cosmos_availability}"><span>${availIcon[v.cosmos_availability]}</span>${v.cosmos_availability}</span><span class="corepill ${v.core_status==="Core"?"core":""}">${v.core_status}</span></div>`;
-      const cb=row.querySelector(".cbx");cb.addEventListener("change",()=>{cb.checked?state.selected.add(v.variable_id):state.selected.delete(v.variable_id);row.classList.toggle("sel",cb.checked);renderCart();buildNav();updateSession();});
-      row.querySelector("[data-x]").addEventListener("click",()=>row.classList.toggle("open"));vlist.appendChild(row);});}
-  c.querySelector("#selAll").addEventListener("click",e=>{const fs=filtered(),all=fs.every(v=>state.selected.has(v.variable_id));
-    fs.forEach(v=>all?state.selected.delete(v.variable_id):state.selected.add(v.variable_id));renderList();renderCart();buildNav();updateSession();e.target.textContent=all?"Select all shown":"Deselect shown";});
-  c.querySelector("#expandAll").addEventListener("click",e=>{expandAll=!expandAll;e.target.textContent=expandAll?"Collapse definitions":"Expand definitions";renderList();});
+  function passFilter(v){if(availFilter.size&&!availFilter.has(v.cosmos_availability))return false;
+    if(roleFilter.size&&!v.roles.some(r=>roleFilter.has(r)))return false;return match(v,searchQ);}
+  const filterActive=()=>availFilter.size||roleFilter.size||searchQ.trim().length>0;
+
+  // filter chips
+  const availChips=c.querySelector("#availChips");
+  [["High","✓ Cosmos: High"],["Medium","~ Medium"],["Low","! Low"]].forEach(a=>{const b=el("button","fchip",a[1]);
+    b.addEventListener("click",()=>{b.classList.toggle("on");availFilter.has(a[0])?availFilter.delete(a[0]):availFilter.add(a[0]);renderTree();});availChips.appendChild(b);});
+  const roleChips=c.querySelector("#roleChips");
+  ROLES.forEach(r=>{const b=el("button","fchip",`<span class="fx" style="background:var(${ROLE_VAR[r]})"></span>${r}`);
+    b.addEventListener("click",()=>{b.classList.toggle("on");roleFilter.has(r)?roleFilter.delete(r):roleFilter.add(r);renderTree();});roleChips.appendChild(b);});
+  c.querySelector("#search").addEventListener("input",e=>{searchQ=e.target.value;
+    hint.innerHTML=searchQ.trim()?`Chat filter active — matching variables highlighted across the taxonomy. Tick a module or subcategory to add them all.`:"";renderTree();});
+  c.querySelector("#expandAllT").addEventListener("click",()=>{expandedModules=new Set(["A","B","C","D"]);expandedSubcats=new Set(catOrder);renderTree();});
+  c.querySelector("#collapseAllT").addEventListener("click",()=>{expandedModules=new Set();expandedSubcats=new Set();renderTree();});
+
+  function renderTree(){
+    const fa=filterActive();let html="";
+    MODULES.forEach(([mcode,mname])=>{
+      const cats=catOrder.filter(cat=>CAT_MODULE[cat]===mcode);
+      const mvars=cats.flatMap(cat=>varsByCat[cat]);
+      const mvis=mvars.filter(passFilter);
+      if(fa&&!mvis.length)return;
+      const mgroup=fa?mvis:mvars;
+      const selN=mgroup.filter(v=>state.selected.has(v.variable_id)).length;
+      const allSel=mgroup.length>0&&selN===mgroup.length,someSel=selN>0&&!allSel;
+      const mexp=fa?true:expandedModules.has(mcode);
+      html+=`<div class="tmod${mexp?" open":""}" style="--mc:${MOD_COLOR[mcode]}">
+        <div class="mh" data-mod="${mcode}">
+          <input type="checkbox" class="cbx" data-modsel="${mcode}" ${allSel?"checked":""} ${someSel?'data-some="1"':""} aria-label="Select module ${mcode}">
+          <span class="mcode">${mcode}</span><span class="mname">${esc(mname)}</span>
+          <span class="mcount">${selN}/${mgroup.length} selected</span><span class="chev">▸</span></div>
+        <div class="mbody">`;
+      if(mexp)cats.forEach(cat=>{
+        const cvars=varsByCat[cat],cvis=cvars.filter(passFilter);
+        if(fa&&!cvis.length)return;
+        const cgroup=fa?cvis:cvars,sc=SUBCAT[cat];
+        const cselN=cgroup.filter(v=>state.selected.has(v.variable_id)).length;
+        const callSel=cgroup.length>0&&cselN===cgroup.length,csome=cselN>0&&!callSel;
+        const sexp=fa?true:expandedSubcats.has(cat);
+        html+=`<div class="tsub${sexp?" open":""}">
+          <div class="sh" data-sub="${esc(cat)}">
+            <input type="checkbox" class="cbx" data-subsel="${esc(cat)}" ${callSel?"checked":""} ${csome?'data-some="1"':""} aria-label="Select ${esc(cat)}">
+            <div style="flex:1"><div><span class="scode">${sc?sc.code:""}</span> <span class="sname">${esc(cat)}</span></div>
+              ${sc?`<div class="sq">${esc(sc.q)}</div><div class="sseed">Seeds: ${sc.seeds.join(" · ")}</div>`:""}</div>
+            <span class="scount">${cselN}/${cgroup.length}</span><span class="chev">▸</span></div>
+          <div class="sbody">`;
+        if(sexp)cgroup.forEach(v=>{const np=(v.links||[]).length;
+          html+=`<div class="tvar">
+            <input type="checkbox" class="cbx" data-var="${v.variable_id}" ${state.selected.has(v.variable_id)?"checked":""} aria-label="Select ${esc(v.variable_name)}">
+            <div><div class="vid">${v.variable_id}</div><div class="vname">${esc(v.variable_name)}</div>
+              <div class="vtags">${v.roles.map(roleTag).join("")}<span class="tag paper">${np} paper${np>1?"s":""}</span></div></div>
+            <div class="vside"><span class="badge a-${v.cosmos_availability}"><span>${availIcon[v.cosmos_availability]}</span>${v.cosmos_availability}</span><span class="corepill ${v.core_status==="Core"?"core":""}">${v.core_status}</span></div>
+          </div>`;});
+        html+=`</div></div>`;
+      });
+      html+=`</div></div>`;
+    });
+    tree.innerHTML=html||'<div style="padding:24px;text-align:center;color:var(--ink-3)">No variables match these filters.</div>';
+    tree.querySelectorAll("input[data-some]").forEach(cb=>cb.indeterminate=true);
+    const shownN=fa?variables.filter(passFilter).length:60;
+    c.querySelector("#listCount").innerHTML=`<b class="tnum">${state.selected.size}</b> selected · <b class="tnum">${shownN}</b> variables shown`;
+  }
+  function toggleGroup(vars,on){vars.forEach(v=>on?state.selected.add(v.variable_id):state.selected.delete(v.variable_id));}
+  tree.addEventListener("click",e=>{
+    if(e.target.classList.contains("cbx"))return;
+    const mh=e.target.closest(".mh");if(mh){const k=mh.dataset.mod;expandedModules.has(k)?expandedModules.delete(k):expandedModules.add(k);renderTree();return;}
+    const sh=e.target.closest(".sh");if(sh){const k=sh.dataset.sub;expandedSubcats.has(k)?expandedSubcats.delete(k):expandedSubcats.add(k);renderTree();return;}
+  });
+  tree.addEventListener("change",e=>{
+    const cb=e.target;if(!cb.classList.contains("cbx"))return;
+    if(cb.dataset.var){cb.checked?state.selected.add(cb.dataset.var):state.selected.delete(cb.dataset.var);}
+    else if(cb.dataset.modsel){const cats=catOrder.filter(cat=>CAT_MODULE[cat]===cb.dataset.modsel);
+      let g=cats.flatMap(cat=>varsByCat[cat]);if(filterActive())g=g.filter(passFilter);toggleGroup(g,cb.checked);}
+    else if(cb.dataset.subsel){let g=varsByCat[cb.dataset.subsel]||[];if(filterActive())g=g.filter(passFilter);toggleGroup(g,cb.checked);}
+    renderTree();renderCart();buildNav();updateSession();
+  });
+
   function renderCart(){c.querySelector("#cartCount").textContent=state.selected.size;
     const sel=variables.filter(v=>state.selected.has(v.variable_id)),rc={Exposure:0,Outcome:0,Adjustment:0,Subgroup:0};
     sel.forEach(v=>v.roles.forEach(r=>{if(rc[r]!=null)rc[r]++;}));
     c.querySelector("#rolesum").innerHTML=sel.length?ROLES.map(r=>`<div class="rl"><span class="rd" style="background:var(${ROLE_VAR[r]})"></span>${r}<span class="n tnum">${rc[r]}</span></div>`).join(""):"";
     const cl=c.querySelector("#cartList");
-    if(!sel.length)cl.innerHTML='<div class="empty">No variables selected yet.<br>Check rows, or click a domain tile.</div>';
+    if(!sel.length)cl.innerHTML='<div class="empty">No variables selected yet.<br>Check a module, subcategory, or variable.</div>';
     else{cl.innerHTML='<div class="selpreview">'+sel.map(v=>`<div class="sp"><span class="pid">${v.variable_id}</span> ${esc(v.variable_name)} <span class="x" data-rm="${v.variable_id}">✕</span></div>`).join("")+"</div>";
-      cl.querySelectorAll("[data-rm]").forEach(x=>x.addEventListener("click",()=>{state.selected.delete(x.dataset.rm);renderList();renderCart();buildNav();updateSession();}));}
+      cl.querySelectorAll("[data-rm]").forEach(x=>x.addEventListener("click",()=>{state.selected.delete(x.dataset.rm);renderTree();renderCart();buildNav();updateSession();}));}
     const av=availOf(sel);
     c.querySelector("#feas").innerHTML=sel.length?`Feasibility mix — <b style="color:var(--good)">${av.High||0} High</b> · <b style="color:var(--warning)">${av.Medium||0} Medium</b> · <b style="color:var(--critical)">${av.Low||0} Low</b>. Low/Medium get a data pre-check at Step 6.`:"Relevance and feasibility are scored separately — pick what the study needs; feasibility is flagged, never auto-filtered.";}
-  // recommendations
+
   const RECS=[
     {t:"Post-EAST-AFNET-4 adoption of early rhythm control across US care settings",nov:"High",fea:"High",imp:"High",n:"~110,000"},
     {t:"Off-label DOAC dosing trends in incident AF and 1-year stroke/bleeding",nov:"Medium",fea:"Medium",imp:"High",n:"~70,000"},
@@ -887,7 +973,18 @@ function mountSelector(c){
       <div class="sc"><div class="lab">Feasibility</div><div class="val" style="color:${scoreColor(r.fea)}">${r.fea}</div></div>
       <div class="sc"><div class="lab">Clinical impact</div><div class="val" style="color:${scoreColor(r.imp)}">${r.imp}</div></div>
       <div class="sc"><div class="lab">Est. eligible N</div><div class="val mono">${r.n}</div></div></div></div>`).join("");
-  renderCats();renderList();renderCart();
+  // exports
+  function selRows(){return variables.filter(v=>state.selected.has(v.variable_id)).map(v=>({
+    variable_id:v.variable_id,variable_name:v.variable_name,category:v.category,module:CAT_MODULE[v.category],
+    roles:v.roles.join("|"),cosmos_availability:v.cosmos_availability,core_status:v.core_status,
+    cosmos_source_tables:v.cosmos_source_tables,n_papers:(v.links||[]).length,source_papers:(v.links||[]).map(l=>l.paper_id).join("|")}));}
+  function dl(name,text,type){const b=new Blob([text],{type});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+  c.querySelector("#expCsv").addEventListener("click",()=>{const rows=selRows();if(!rows.length){alert("Select at least one variable first.");return;}
+    const cols=Object.keys(rows[0]);const csv=[cols.join(",")].concat(rows.map(r=>cols.map(cc=>`"${String(r[cc]).replace(/"/g,'""')}"`).join(","))).join("\n");
+    dl("afib_variable_selection.csv",csv,"text/csv");});
+  c.querySelector("#expJson").addEventListener("click",()=>{const rows=selRows();if(!rows.length){alert("Select at least one variable first.");return;}
+    dl("afib_variable_selection.json",JSON.stringify({run:state.runId,selected_count:rows.length,variables:rows},null,2),"application/json");});
+  renderTree();renderCart();
 }
 
 /* ===================== STEP 4.5 ===================== */
