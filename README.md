@@ -8,33 +8,8 @@ a human checkpoint at every step.
 
 The app is a self-contained HTML file (no server, no build, no internet needed).
 
-## How to view it
+- **Latest app:** https://maggielanjingwang.github.io/Cosmos_Demo/afib_research_platform_v3.html
 
-### Option A — GitHub Pages (recommended, renders the app)
-GitHub serves `.html` files as raw text, so open it through **Pages**, not the
-raw file view.
-
-1. In this repo: **Settings → Pages**.
-2. Under **Build and deployment → Source**, choose **Deploy from a branch**.
-3. Set **Branch: `main`** and **folder: `/ (root)`**, then **Save**.
-4. Wait ~1 minute, then open:
-
-   - **Latest app:** https://maggielanjingwang.github.io/Cosmos_Demo/
-     (the root redirects to the newest version)
-   - Specific version: https://maggielanjingwang.github.io/Cosmos_Demo/afib_research_platform_v3.html
-
-### Option B — No setup (instant preview)
-Use the HTML preview proxy — works without enabling Pages:
-
-- https://htmlpreview.github.io/?https://github.com/maggielanjingwang/Cosmos_Demo/blob/main/afib_research_platform_v3.html
-
-### Option C — Local
-Download `afib_research_platform_v3.html` and double-click it to open in any
-browser.
-
-> Tip: a plain GitHub link like
-> `github.com/.../afib_research_platform_v3.html` only shows the source code.
-> Use Option A or B to actually run the app.
 
 ## What's in the repo
 
